@@ -7,7 +7,7 @@ from flask_login import LoginManager
 
 import click
 
-from config import config
+from .config import config
 from .core.view import head
 from .core.cleanFake import cleanFake
 from .core.dbsf import init_db_command
