@@ -43,7 +43,17 @@ def create_app():
     # adicionar comando init_db_command ex: flask init-db
     app.cli.add_command(init_db_command)
     app.cli.add_command(clean_fake_command)
+    app.cli.add_command(test)
 
     from .socialfish import socialbp # Blueprint
     app.register_blueprint(socialbp)
     return app
+
+import click
+
+@click.command()
+def test():
+    """Run the unit tests."""
+    import unittest
+    tests = unittest.TestLoader().discover('tests')
+    unittest.TextTestRunner(verbosity=2).run(tests)
