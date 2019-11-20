@@ -7,6 +7,7 @@ from flask_login import LoginManager
 
 import click
 
+from config import config
 from .core.view import head
 from .core.cleanFake import cleanFake
 from .core.dbsf import init_db_command
@@ -19,16 +20,14 @@ head()
 login_manager = LoginManager()
 db = SQLAlchemy()
 
-def create_app():
+def create_app(config_name):
     app = Flask(__name__, instance_relative_config=True)
 
-    app.config.from_mapping({
-        'SEND_FILE_MAX_AGE_DEFAULT': 0,
-        'SECRET_KEY': os.urandom(16),
-        'SQLALCHEMY_DATABASE_URI': "sqlite:///" + os.path.join(app.instance_path, 'database.sqlite'),
-        'SQLALCHEMY_TRACK_MODIFICATIONS': False
-        }
-    )
+    #configurações para testes
+    config_name = config_name.data or os.getenv('FLASK_CONFIG')
+    config_name = config_name or 'default'
+    app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
 
     #inicializa o gerenciador de login
     login_manager.init_app(app)
